@@ -1,0 +1,48 @@
+Sub excelToJson()
+
+    Dim rng As Range
+    Dim items As New Collection
+    Dim myitem As New Dictionary
+    Dim i As Integer
+    Dim numOfColumn
+    
+    Set rngNoTitle = Range(ActiveSheet.Range("A2"), ActiveSheet.Range("A2").End(xlDown))
+    Set rngAll = Range(ActiveSheet.Range("A1"), ActiveSheet.Range("A2").End(xlDown))
+    
+    numOfColumn = ActiveSheet.Cells(1, Columns.Count).End(xlToLeft).Column
+    
+    i = 0
+    For Each cell In rngNoTitle
+    
+        Debug.Print (cell.Value)
+        
+        If numOfColumn = 0 Then
+            MsgBox "No Columns. Exiting Macro"
+        ElseIf numOfColumn = 1 Then
+            'myitem("language") =
+            'myitem("id") =
+            'myitem("text") =
+            myitem(rngAll.Cells(1, 1).Value) = cell.Value
+        Else
+            'myitem("language") =
+            'myitem("id") =
+            'myitem("text") =
+            myitem(rngAll.Cells(1, 1).Value) = cell.Value
+            
+            For j = 1 To numOfColumn
+                myitem(rngAll.Cells(1, 1).Offset(0, j).Value) = cell.Offset(0, j).Value
+            Next j
+        End If
+        
+        items.Add myitem
+        Set myitem = Nothing
+        i = i + 1
+        
+    Next cell
+    
+    myfile = Application.ActiveWorkbook.Path & "\data.json"
+    Open myfile For Output As #1
+    Print #1, ConvertToJson(items, Whitespace:=2)
+    Close #1
+        
+End Sub
